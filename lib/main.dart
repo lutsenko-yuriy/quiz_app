@@ -70,11 +70,7 @@ class _MyAppState extends State<MyApp> {
     var widgets = <Widget>[];
 
     if (_questionIndex >= _questions.length) {
-      widgets.add(const Text("The quiz is over! Well done!"));
-      widgets.add(
-        ElevatedButton(
-            onPressed: _restartQuiz, child: const Text("Restart the quiz!")),
-      );
+      widgets.addAll(_layoutWithQuizOver());
     } else {
       widgets.addAll(_layoutWithCurrentQuestionAndAnswerStatus());
     }
@@ -84,41 +80,104 @@ class _MyAppState extends State<MyApp> {
           appBar: AppBar(
             title: const Text("My first page"),
           ),
-          body: Column(
-            children: widgets,
+          body: SizedBox(
+            width: double.infinity,
+            height: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: widgets,
+            ),
           )),
     );
+  }
+
+  List<Widget> _layoutWithQuizOver() {
+    return [
+      Container(
+        padding: const EdgeInsets.all(10),
+        child: const Text(
+          "The quiz is over! Well done!",
+          style: TextStyle(
+            fontSize: 28,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      Container(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: ElevatedButton(
+              onPressed: _restartQuiz,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                child: const Text(
+                  "Restart the quiz!",
+                  style: TextStyle(fontSize: 24),
+                ),
+              )
+          )
+      ),
+    ];
   }
 
   List<Widget> _layoutWithCurrentQuestionAndAnswerStatus() {
     var widgets = <Widget>[];
 
-    Widget? message;
-
-    if (_lastQuestionWasAnsweredCorrectly == true) {
-      message = const Text(
-        "Correct! Let's proceed to the next answer!",
-        style: TextStyle(backgroundColor: Colors.green),
-      );
-    } else if (_lastQuestionWasAnsweredCorrectly == false) {
-      message = const Text(
-        "Incorrect! Please try again!",
-        style: TextStyle(backgroundColor: Colors.red),
-      );
-    }
-
-    if (message != null) {
-      widgets.add(message);
-    }
-
     var question = _questions[_questionIndex];
 
-    widgets.add(QuestionWidget(
-      question,
-      () => _onQuestionAnsweredCorrectly(question),
-      () => _onQuestionAnsweredIncorrectly(question),
-    ));
+    widgets.add(Flexible(
+        flex: 1,
+        child: QuestionWidget(
+          question,
+              () => _onQuestionAnsweredCorrectly(question),
+              () => _onQuestionAnsweredIncorrectly(question),
+        )));
+
+    var messageWidget = _messageWidget();
+
+    if (messageWidget != null) {
+      widgets.add(
+        Flexible(
+          child: messageWidget,
+        ),
+      );
+    }
 
     return widgets;
+  }
+
+  Widget _messageWidget() {
+    Widget? message;
+    Color? backgroundColor;
+
+    if (_lastQuestionWasAnsweredCorrectly == true) {
+      backgroundColor = Colors.green;
+      message = const Text(
+        "Correct! Let's proceed to the next answer!",
+        style: TextStyle(
+          backgroundColor: Colors.green,
+          color: Colors.white,
+        ),
+        textAlign: TextAlign.center,
+      );
+    } else if (_lastQuestionWasAnsweredCorrectly == false) {
+      backgroundColor = Colors.red;
+      message = const Text(
+        "Incorrect! Please try again!",
+        style: TextStyle(
+          backgroundColor: Colors.red,
+          color: Colors.white,
+        ),
+        textAlign: TextAlign.center,
+      );
+    }
+    return Container(
+      width: double.infinity,
+      color: backgroundColor,
+      padding: const EdgeInsets.all(10),
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: message,
+      ),
+    );
   }
 }

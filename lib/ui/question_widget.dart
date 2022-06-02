@@ -6,27 +6,44 @@ class QuestionWidget extends StatelessWidget {
   final Function _onPositiveAnswer;
   final Function _onNegativeAnswer;
 
-  const QuestionWidget(this._question,
-      this._onPositiveAnswer,
-      this._onNegativeAnswer,
-      {Key? key}) : super(key: key);
+  const QuestionWidget(
+      this._question, this._onPositiveAnswer, this._onNegativeAnswer,
+      {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var widgets = <Widget>[];
-    widgets.add(Text(_question.questionText, textWidthBasis: TextWidthBasis.longestLine,));
-    widgets.addAll(
-        _question.answers.map((answer) {
-          return ElevatedButton(
+    widgets.add(Text(
+      _question.questionText,
+      style: const TextStyle(fontSize: 28),
+      textAlign: TextAlign.center,
+    ));
+    widgets.addAll(_question.answers.map((answer) {
+      return SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
             onPressed: () {
               answer == _question.correctAnswer
                   ? _onPositiveAnswer()
                   : _onNegativeAnswer();
             },
-            child: Text(answer.answerText),
-          );
-        })
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.blue),
+                textStyle:
+                    MaterialStateProperty.all(const TextStyle(color: Colors.white))),
+            child: Text(
+              answer.answerText,
+            ),
+          ));
+    }));
+
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.all(10),
+      child: Column(
+        children: widgets,
+      ),
     );
-    return Column(children: widgets,);
   }
 }
