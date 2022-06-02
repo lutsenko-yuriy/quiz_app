@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'question.dart';
-import 'answer.dart';
+import 'package:quiz_app/ui/question_widget.dart';
+import 'models/question.dart';
+import 'models/answer.dart';
 
 void main() => runApp(const MyApp());
 
@@ -12,7 +13,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var questions = [
+  final _questions = [
     Question(
         "What is your name?",
         [
@@ -21,8 +22,7 @@ class _MyAppState extends State<MyApp> {
           Answer("Iurii"),
           Answer("Dazdraperma")
         ],
-        Answer("Iurii")
-    ),
+        Answer("Iurii")),
     Question(
         "What is your quest?",
         [
@@ -30,8 +30,7 @@ class _MyAppState extends State<MyApp> {
           Answer("To seek The Holy Grail"),
           Answer("Save Hyrule"),
         ],
-        Answer("To seek The Holy Grail")
-    ),
+        Answer("To seek The Holy Grail")),
     Question(
         "What is your favourite color?",
         [
@@ -39,44 +38,64 @@ class _MyAppState extends State<MyApp> {
           Answer("Purple"),
           Answer("Orange"),
         ],
-        Answer("Orange")
-    ),
+        Answer("Orange")),
   ];
 
-  var questionIndex = 0;
+  var _questionIndex = 0;
 
-  void _answerQuestion(String answer) {
+  bool? _lastQuestionWasAnsweredCorrectly;
+
+  void _onQuestionAnsweredCorrectly(Question question) {
     setState(() {
-      questionIndex++;
-      print("$answer, moving to the question $questionIndex");
+      _questionIndex++;
+      _lastQuestionWasAnsweredCorrectly = true;
+    });
+  }
+
+  void _onQuestionAnsweredIncorrectly(Question question) {
+    setState(() {
+      _lastQuestionWasAnsweredCorrectly = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    var widgets = <Widget>[];
+
+    if (_questionIndex >= _questions.length) {
+      widgets.add(const Text("The quiz is over! Well done!"));
+    } else {
+      widgets.addAll(_layoutWithCurrentQuestion());
+    }
+
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text("My first page"),
-        ),
-        body: Column(
-          children: [
-            Text(questions[questionIndex].questionText),
-            ElevatedButton(
-              onPressed: () => _answerQuestion("Answer 1 is selected"),
-              child: Text("Answer 1"),
-            ),
-            ElevatedButton(
-              onPressed: () => _answerQuestion("Answer 2 is selected"),
-              child: Text("Answer 2"),
-            ),
-            ElevatedButton(
-              onPressed: () => _answerQuestion("Answer 3 is selected"),
-              child: Text("Answer 3"),
-            ),
-          ],
-        ),
-      ),
+          appBar: AppBar(
+            title: const Text("My first page"),
+          ),
+          body: Column(
+            children: widgets,
+          )),
     );
+  }
+
+  List<Widget> _layoutWithCurrentQuestion() {
+    var widgets = <Widget>[];
+
+    if (_lastQuestionWasAnsweredCorrectly == true) {
+      widgets.add(const Text("Correct! Let's proceed to the next answer!"));
+    } else if (_lastQuestionWasAnsweredCorrectly == false) {
+      widgets.add(const Text("Incorrect! Please try again!"));
+    }
+
+    var question = _questions[_questionIndex];
+
+    widgets.add(QuestionWidget(
+      question,
+          () => _onQuestionAnsweredCorrectly(question),
+          () => _onQuestionAnsweredIncorrectly(question),
+    ));
+
+    return widgets;
   }
 }
