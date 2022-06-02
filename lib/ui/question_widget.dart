@@ -34,8 +34,8 @@ class QuestionWidget extends StatelessWidget {
                   },
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.blue),
-                      textStyle:
-                      MaterialStateProperty.all(const TextStyle(color: Colors.white))),
+                      textStyle: MaterialStateProperty.all(
+                          const TextStyle(color: Colors.white))),
                   child: Text(
                     answer.answerText,
                   ),
