@@ -58,14 +58,25 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void _restartQuiz() {
+    setState(() {
+      _questionIndex = 0;
+      _lastQuestionWasAnsweredCorrectly = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var widgets = <Widget>[];
 
     if (_questionIndex >= _questions.length) {
       widgets.add(const Text("The quiz is over! Well done!"));
+      widgets.add(
+        ElevatedButton(
+            onPressed: _restartQuiz, child: const Text("Restart the quiz!")),
+      );
     } else {
-      widgets.addAll(_layoutWithCurrentQuestion());
+      widgets.addAll(_layoutWithCurrentQuestionAndAnswerStatus());
     }
 
     return MaterialApp(
@@ -79,21 +90,33 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  List<Widget> _layoutWithCurrentQuestion() {
+  List<Widget> _layoutWithCurrentQuestionAndAnswerStatus() {
     var widgets = <Widget>[];
 
+    Widget? message;
+
     if (_lastQuestionWasAnsweredCorrectly == true) {
-      widgets.add(const Text("Correct! Let's proceed to the next answer!"));
+      message = const Text(
+        "Correct! Let's proceed to the next answer!",
+        style: TextStyle(backgroundColor: Colors.green),
+      );
     } else if (_lastQuestionWasAnsweredCorrectly == false) {
-      widgets.add(const Text("Incorrect! Please try again!"));
+      message = const Text(
+        "Incorrect! Please try again!",
+        style: TextStyle(backgroundColor: Colors.red),
+      );
+    }
+
+    if (message != null) {
+      widgets.add(message);
     }
 
     var question = _questions[_questionIndex];
 
     widgets.add(QuestionWidget(
       question,
-          () => _onQuestionAnsweredCorrectly(question),
-          () => _onQuestionAnsweredIncorrectly(question),
+      () => _onQuestionAnsweredCorrectly(question),
+      () => _onQuestionAnsweredIncorrectly(question),
     ));
 
     return widgets;
