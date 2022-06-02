@@ -68,19 +68,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    Widget widgetToShow;
-
-    if (_questionIndex >= _questions.length) {
-      widgetToShow = ResultWidget(_restartQuiz);
-    } else {
-      widgetToShow = CurrentQuizStatusWidget(
-          _questions[_questionIndex],
-          _onQuestionAnsweredCorrectly,
-          _onQuestionAnsweredIncorrectly,
-          _lastQuestionWasAnsweredCorrectly
-      );
-    }
-
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
@@ -89,7 +76,13 @@ class _MyAppState extends State<MyApp> {
           body: SizedBox(
             width: double.infinity,
             height: double.infinity,
-            child: widgetToShow,
+            child: _questionIndex >= _questions.length
+                ? ResultWidget(_restartQuiz)
+                : CurrentQuizStatusWidget(
+                    _questions[_questionIndex],
+                    _onQuestionAnsweredCorrectly,
+                    _onQuestionAnsweredIncorrectly,
+                    _lastQuestionWasAnsweredCorrectly),
           )),
     );
   }
