@@ -134,13 +134,11 @@ class _MyAppState extends State<MyApp> {
 
     var messageWidget = _messageWidget();
 
-    if (messageWidget != null) {
-      widgets.add(
-        Flexible(
-          child: messageWidget,
-        ),
-      );
-    }
+    widgets.add(
+      Flexible(
+        child: messageWidget,
+      ),
+    );
 
     return widgets;
   }
