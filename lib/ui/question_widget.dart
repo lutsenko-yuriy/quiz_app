@@ -14,7 +14,7 @@ class QuestionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var widgets = <Widget>[];
-    widgets.add(Text(_question.questionText));
+    widgets.add(Text(_question.questionText, textWidthBasis: TextWidthBasis.longestLine,));
     widgets.addAll(
         _question.answers.map((answer) {
           return ElevatedButton(
