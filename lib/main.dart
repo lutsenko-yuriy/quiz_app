@@ -113,9 +113,7 @@ class _MyAppState extends State<MyApp> {
                   "Restart the quiz!",
                   style: TextStyle(fontSize: 24),
                 ),
-              )
-          )
-      ),
+              ))),
     ];
   }
 
@@ -128,8 +126,8 @@ class _MyAppState extends State<MyApp> {
         flex: 1,
         child: QuestionWidget(
           question,
-              () => _onQuestionAnsweredCorrectly(question),
-              () => _onQuestionAnsweredIncorrectly(question),
+          () => _onQuestionAnsweredCorrectly(question),
+          () => _onQuestionAnsweredIncorrectly(question),
         )));
 
     var messageWidget = _messageWidget();
